@@ -150,6 +150,7 @@ interface IBEP20 {
      *
      * Emits a {Transfer} event.
      */
+     
     function transferFrom(
         address sender,
         address recipient,
@@ -170,6 +171,7 @@ interface IBEP20 {
      *
      * Emits an {Approval} event.
      */
+     
     function approve(address spender, uint256 amount) external returns (bool);
 
     /**
@@ -203,7 +205,6 @@ interface IBEP20 {
 pragma solidity ^0.8.0;
 
 
-
 /**
  * @dev Implementation of the {IBEP20} interface.
  *
@@ -224,16 +225,14 @@ pragma solidity ^0.8.0;
  * allowances. See {IBEP20-approve}.
  */
 contract BEP20 is Ownable, IBEP20 {
+    
     mapping(address => uint256) private _balances;
-
     mapping(address => mapping(address => uint256)) private _allowances;
 
     uint256 private _totalSupply;
-
     string private _name;
     string private _symbol;
     uint8 private _decimals;
-
     /**
      * @dev Sets the values for {name} and {symbol}, initializes {decimals} with
      * a default value of 18.
@@ -243,10 +242,12 @@ contract BEP20 is Ownable, IBEP20 {
      * All three of these values are immutable: they can only be set once during
      * construction.
      */
-    constructor(string memory name_, string memory symbol_) {
+     
+    constructor(string memory name_, string memory symbol_ ,uint256 initialSupply) {
         _name = name_;
         _symbol = symbol_;
         _decimals = 18;
+        _totalSupply = initialSupply * 10 ** uint256(_decimals); 
     }
 
     /**
@@ -568,10 +569,11 @@ contract StandardBEP20 is BEP20, ServicePayer {
     constructor(
         string memory name_,
         string memory symbol_,
+        uint256 totalSupply_,
         uint8 decimals_,
         uint256 initialBalance_,
         address payable feeReceiver_
-    ) payable BEP20(name_, symbol_) ServicePayer(feeReceiver_, "StandardBEP20") {
+    ) payable BEP20(name_, symbol_,totalSupply_) ServicePayer(feeReceiver_, "StandardBEP20") {
         require(initialBalance_ > 0, "StandardBEP20: supply cannot be zero");
 
         _setupDecimals(decimals_);
