@@ -1,1 +1,1 @@
-# holdex-contract
+# holdex-smart-contract
